@@ -1,7 +1,5 @@
-const MetaCoin = artifacts.require("MetaCoin");
+const Pool = artifacts.require("Pool");
 
 module.exports = function(deployer) {
-  deployer.deploy(ConvertLib);
-  deployer.link(ConvertLib, MetaCoin);
-  deployer.deploy(MetaCoin);
+  deployer.deploy(Pool);
 };
