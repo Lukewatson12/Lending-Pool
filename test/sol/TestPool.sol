@@ -29,8 +29,8 @@ contract TestPoolDeposit {
     function testDepositWillUpdateTotal() public {
         Pool pool = Pool(DeployedAddresses.Pool());
 
-        pool.deposit.value(10).gas(999999999)();
-        pool.deposit.value(2).gas(999999999)();
+        pool.deposit.value(10).gas(23000)();
+        pool.deposit.value(2).gas(23000)();
 
         uint totalDeposited = pool.viewDeposited(address(this));
 
@@ -40,18 +40,18 @@ contract TestPoolDeposit {
             "Deposited amount is greater than amount deposited"
         );
     }
-    //
-    //    function testWithdrawal() public {
-    //        Pool pool = Pool(DeployedAddresses.Pool());
-    //        uint amount = 1 wei;
-    //
-    //        (bool success,) = address(pool).call(
-    //            abi.encodePacked(
-    //                pool.withdrawTokens.selector,
-    //                abi.encode(address(this), amount)
-    //            )
-    //        );
-    //
-    //        Assert.equal(true, success, "Unable to withdraw, not enough balance");
-    //    }
+
+//    function testWithdrawal() public {
+//        Pool pool = Pool(DeployedAddresses.Pool());
+//        uint amount = 1 wei;
+//
+//        (bool success,) = address(pool).call(
+//            abi.encodePacked(
+//                pool.withdrawTokens.selector,
+//                abi.encode(address(this), amount)
+//            )
+//        );
+//
+//        Assert.equal(true, success, "Unable to withdraw, not enough balance");
+//    }
 }
