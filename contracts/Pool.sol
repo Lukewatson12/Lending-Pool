@@ -21,10 +21,11 @@ contract Pool {
     function deposit() public payable {
         require(msg.value > 0);
 
-        treasury.deposit(
-            msg.value,
-            msg.sender,
-            block.number * 14
+        (bool success,) = address(treasury).call.value(msg.value)(
+            abi.encodeWithSignature(
+                "deposit(address)",
+                msg.sender
+            )
         );
     }
 
@@ -32,11 +33,14 @@ contract Pool {
         deposit();
     }
 
-    function viewDeposited(address _address) public view returns (uint amount) {
+    function viewDeposited(address _address) public returns (uint amount) {
         return treasury.getDepositsForAddress(_address);
     }
 
-    function withdrawTokens(uint _amount) public {
+    function withdrawTokens(address payable _address, uint _amount) public {
+        require(_address == msg.sender, "You cannot withdraw on behalf of somebody else");
         require(totalTokens >= _amount, "Exceeding balance");
+
+        treasury.withdraw(_address, _amount);
     }
 }

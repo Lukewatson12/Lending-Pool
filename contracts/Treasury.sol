@@ -15,6 +15,7 @@ contract Treasury {
     event WithdrawalEvent(uint _amount, address _to, uint when);
 
     event DepositWithdrawnEvent(uint _amount, address _to, uint when, bool isDepositEmpty);
+    event t(address _address, uint _amount);
 
     modifier withdrawalLimit(uint _amount, address _address) {
         uint totalDeposited = getDepositsForAddress(_address);
@@ -51,12 +52,14 @@ contract Treasury {
         emit DepositEvent(msg.value, _address, timeDeposit);
     }
 
-    function getDepositsForAddress(address _address) public view returns (uint amount) {
+    function getDepositsForAddress(address _address) public returns (uint amount) {
         require(deposits[_address].length > 0, "No deposits");
         uint totalDeposited = 0;
 
         for (uint i = 0; i < deposits[_address].length; i++) {
-            uint amountInDeposit = deposits[_address][i]._amount;
+            emit t(_address, deposits[_address][i]._amount);
+
+        uint amountInDeposit = deposits[_address][i]._amount;
             totalDeposited = totalDeposited.add(amountInDeposit);
         }
 
