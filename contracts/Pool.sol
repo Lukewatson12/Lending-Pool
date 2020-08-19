@@ -9,7 +9,6 @@ contract Pool {
     using SafeMath for uint;
 
     address private owner;
-    uint private totalTokens;
 
     Treasury private treasury;
 
@@ -27,20 +26,27 @@ contract Pool {
                 msg.sender
             )
         );
+
+        if(false == success) {
+            revert();
+        }
     }
 
     receive() external payable {
         deposit();
     }
 
-    function viewDeposited(address _address) public returns (uint amount) {
+    function viewDeposited(address _address) public view returns (uint amount) {
         return treasury.getDepositsForAddress(_address);
     }
 
-    function withdrawTokens(address payable _address, uint _amount) public {
-        require(_address == msg.sender, "You cannot withdraw on behalf of somebody else");
-        require(totalTokens >= _amount, "Exceeding balance");
+    function viewTreasuryBalance() public view returns (uint) {
+        return address(treasury).balance;
+    }
 
-        treasury.withdraw(_address, _amount);
+    function withdraw(uint _amount) public {
+        require(address(treasury).balance >= _amount, "There is not enough funds in the Treasury");
+
+        treasury.withdraw(msg.sender, _amount);
     }
 }

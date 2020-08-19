@@ -12,14 +12,13 @@ contract Treasury {
 
     event DepositEvent(uint _amount, address _from, uint when);
 
-    event WithdrawalEvent(uint _amount, address _to, uint when);
+    event WithdrawalEvent(uint _amount, uint _amountRemaining, address _to, uint when);
 
     event DepositWithdrawnEvent(uint _amount, address _to, uint when, bool isDepositEmpty);
-    event t(address _address, uint _amount);
 
     modifier withdrawalLimit(uint _amount, address _address) {
-        uint totalDeposited = getDepositsForAddress(_address);
-        require(totalDeposited >= _amount, "Total withdrawal exceeds total deposited");
+//        uint totalDeposited = getDepositsForAddress(_address);
+        require(addressBalances[_address] >= _amount, "Total withdrawal exceeds total deposited");
         _;
     }
 
@@ -30,6 +29,8 @@ contract Treasury {
     }
 
     mapping(address => DepositStruct[]) public deposits;
+
+    mapping(address => uint) public addressBalances;
 
     Pool private pool;
 
@@ -43,37 +44,40 @@ contract Treasury {
 
     function deposit(address _address) payable public {
         uint timeDeposit = block.timestamp * 14;
-        deposits[_address].push(DepositStruct(
+        deposits[_address].push(
+            DepositStruct(
                 msg.value,
                 _address,
                 timeDeposit
-            ));
+            )
+        );
+
+        addressBalances[_address] = addressBalances[_address].add(msg.value);
 
         emit DepositEvent(msg.value, _address, timeDeposit);
     }
 
-    function getDepositsForAddress(address _address) public returns (uint amount) {
+    function getDepositsForAddress(address _address) public view returns (uint amount) {
         require(deposits[_address].length > 0, "No deposits");
         uint totalDeposited = 0;
 
         for (uint i = 0; i < deposits[_address].length; i++) {
-            emit t(_address, deposits[_address][i]._amount);
-
-        uint amountInDeposit = deposits[_address][i]._amount;
+            uint amountInDeposit = deposits[_address][i]._amount;
             totalDeposited = totalDeposited.add(amountInDeposit);
         }
 
         return totalDeposited;
     }
 
+    // Remember checks effects interaction
     function withdraw(address payable _address, uint _amount) external withdrawalLimit(_amount, _address) {
         handleFundBalancing(_address, _amount);
+        addressBalances[_address] = addressBalances[_address].sub(_amount);
 
-        emit WithdrawalEvent(_amount, _address, block.timestamp * 14);
+        emit WithdrawalEvent(_amount, addressBalances[_address], _address, block.timestamp * 14);
 
-        _address.transfer(_amount);
+        _address.send(_amount);
     }
-
 
     // Could use a refactor
     function handleFundBalancing(address payable _address, uint _amountToWithdraw) internal {

@@ -11,6 +11,8 @@ import "../../contracts/Pool.sol";
 contract TestPoolDeposit {
     uint public initialBalance = 1 ether;
 
+    event ExceptionThrown(string message);
+
     // Must come before deposits are made
     function testWhenThereAreNoDepositsAnExceptionOccurs() public {
         Pool pool = Pool(DeployedAddresses.Pool());
@@ -29,29 +31,52 @@ contract TestPoolDeposit {
     function testDepositWillUpdateTotal() public {
         Pool pool = Pool(DeployedAddresses.Pool());
 
-        pool.deposit.value(10).gas(23000)();
-        pool.deposit.value(2).gas(23000)();
+        // Gas is causing problems
+        pool.deposit.value(10).gas(999999999)();
+        pool.deposit.value(2).gas(999999999)();
 
         uint totalDeposited = pool.viewDeposited(address(this));
+
+        Assert.equal(
+            12,
+            totalDeposited,
+            "Deposited amount does not match amount deposited"
+        );
 
         Assert.notEqual(
             13,
             totalDeposited,
             "Deposited amount is greater than amount deposited"
         );
+
+        Assert.equal(
+            12,
+            pool.viewTreasuryBalance(),
+            "Treasury balance is incorrect"
+        );
     }
 
 //    function testWithdrawal() public {
 //        Pool pool = Pool(DeployedAddresses.Pool());
-//        uint amount = 1 wei;
 //
-//        (bool success,) = address(pool).call(
-//            abi.encodePacked(
-//                pool.withdrawTokens.selector,
-//                abi.encode(address(this), amount)
-//            )
+//        try pool.withdraw.gas(99999999)(400 wei) {
+//            revert("There is not enough balance in the pool, exception should have thrown");
+//        } catch (bytes memory exception) {
+//            emit ExceptionThrown("testWithdrawal");
+//        }
+//
+//        // Don't catch let it throw
+//        pool.withdraw.gas(9999999999999)(10 wei);
+//
+//        Assert.equal(
+//            2,
+//            pool.viewDeposited(address(this)),
+//            "Address balance has not been subtracted"
 //        );
-//
-//        Assert.equal(true, success, "Unable to withdraw, not enough balance");
+//        Assert.equal(
+//            11,
+//            pool.viewTreasuryBalance(),
+//            "Treasury balance is incorrect"
+//        );
 //    }
 }
