@@ -16,7 +16,6 @@ contract TestPoolDeposit {
     // Must come before deposits are made
     function testWhenThereAreNoDepositsAnExceptionOccurs() public {
         Pool pool = Pool(DeployedAddresses.Pool());
-        uint amount = 1;
 
         try pool.viewDeposited(address(this)) {
             Assert.equal(
@@ -56,27 +55,29 @@ contract TestPoolDeposit {
         );
     }
 
-//    function testWithdrawal() public {
-//        Pool pool = Pool(DeployedAddresses.Pool());
-//
-//        try pool.withdraw.gas(99999999)(400 wei) {
-//            revert("There is not enough balance in the pool, exception should have thrown");
-//        } catch (bytes memory exception) {
-//            emit ExceptionThrown("testWithdrawal");
-//        }
-//
-//        // Don't catch let it throw
-//        pool.withdraw.gas(9999999999999)(10 wei);
-//
+    function testWithdrawal() public {
+        Pool pool = Pool(DeployedAddresses.Pool());
+
+        try pool.withdraw.gas(99999999)(400 wei) {
+            revert("There is not enough balance in the pool, exception should have thrown");
+        } catch (bytes memory exception) {
+            emit ExceptionThrown("testWithdrawal");
+        }
+
+        // Don't catch let it throw
+        pool.withdraw.gas(9999999999999)(10 wei);
+
+        Assert.equal(
+            2,
+            pool.viewDeposited(address(this)),
+            "Address balance has not been subtracted"
+        );
+
+        //todo why does the balance not reflect the updated amount
 //        Assert.equal(
 //            2,
-//            pool.viewDeposited(address(this)),
-//            "Address balance has not been subtracted"
-//        );
-//        Assert.equal(
-//            11,
 //            pool.viewTreasuryBalance(),
 //            "Treasury balance is incorrect"
 //        );
-//    }
+    }
 }
