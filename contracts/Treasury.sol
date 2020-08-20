@@ -2,7 +2,7 @@
 
 pragma solidity >= 0.6.0 <0.7.0;
 
-import "./lib/SafeMath.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
 import "./Pool.sol";
 //import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/payment/PaymentSplitter.sol";
 
@@ -17,7 +17,6 @@ contract Treasury {
     event DepositWithdrawnEvent(uint _amount, address _to, uint when, bool isDepositEmpty);
 
     modifier withdrawalLimit(uint _amount, address _address) {
-//        uint totalDeposited = getDepositsForAddress(_address);
         require(addressBalances[_address] >= _amount, "Total withdrawal exceeds total deposited");
         _;
     }

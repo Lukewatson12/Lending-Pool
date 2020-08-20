@@ -2,8 +2,8 @@
 
 pragma solidity >= 0.6.0 <0.7.0;
 
-import "./lib/SafeMath.sol";
 import "./Treasury.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
 
 contract Pool {
     using SafeMath for uint;
