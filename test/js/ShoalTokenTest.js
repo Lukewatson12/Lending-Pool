@@ -5,6 +5,7 @@ contract("ShoalToken", accounts => {
 
     const alice = accounts[0];
     const bob = accounts[1];
+    const charlie = accounts[2];
 
     let shoalInstance;
 
@@ -62,4 +63,31 @@ contract("ShoalToken", accounts => {
         );
     });
 
+    it("It should have a view function with calculates the total share of the pool for each address", async () => {
+        await shoalInstance.mint(alice, 100);
+        await shoalInstance.mint(bob, 100);
+        await shoalInstance.mint(charlie, 100);
+
+        const bobShare = await shoalInstance.calculateShareOfTokens(bob);
+
+        assert.equal(
+            333333,
+            parseInt(bobShare),
+            "Bobs share is not equal to the expected amount"
+        )
+    });
+
+    it("It can calculate complex percentages", async () => {
+        await shoalInstance.mint(alice, 123);
+        await shoalInstance.mint(bob, 456);
+        await shoalInstance.mint(charlie, 765);
+
+        const charlieShare = await shoalInstance.calculateShareOfTokens(charlie);
+
+        assert.equal(
+            569196,
+            parseInt(charlieShare),
+            "Bobs share is not equal to the expected amount"
+        )
+    });
 });

@@ -3,7 +3,6 @@
 pragma solidity >= 0.6.0 <0.7.0;
 
 import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/GSN/Context.sol";
 import "./Treasury.sol";
 import "./ShoalToken.sol";
 
