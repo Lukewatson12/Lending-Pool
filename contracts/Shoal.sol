@@ -3,22 +3,28 @@
 pragma solidity >= 0.6.0 <0.7.0;
 
 import "@openzeppelin/contracts/math/SafeMath.sol";
+import "./lending/ShoalLendPool.sol";
 import "./Treasury.sol";
 import "./ShoalToken.sol";
 
-// Todo this is not really a pool anymore, consider renaming
-contract Pool{
+contract Shoal {
     using SafeMath for uint;
 
     address private owner;
 
     Treasury private treasury;
+
+    ShoalLendPool private shoalLendPool;
+
     ShoalToken private shoal;
 
     constructor() public {
         owner = msg.sender;
-        shoal = new ShoalToken();
         treasury = new Treasury(this);
+
+        shoalLendPool = new ShoalLendPool(
+            new ShoalToken()
+        );
     }
 
     function deposit() public payable {
@@ -31,7 +37,7 @@ contract Pool{
             )
         );
 
-        if(false == success) {
+        if (false == success) {
             revert();
         }
     }

@@ -1,9 +1,9 @@
-const Pool = artifacts.require("Pool");
+const Shoal = artifacts.require("Shoal");
 
 const oneEther = web3.utils.toWei("1");
 const twoEther = web3.utils.toWei("2");
 
-contract("Pool", accounts => {
+contract("Shoal", accounts => {
     const alice = accounts[0];
     const bob = accounts[1];
 
@@ -11,7 +11,7 @@ contract("Pool", accounts => {
 
     // Reset the contract each run
     beforeEach(async function () {
-        return await Pool.new()
+        return await Shoal.new()
             .then(function (instance) {
                 poolInstance = instance;
             });

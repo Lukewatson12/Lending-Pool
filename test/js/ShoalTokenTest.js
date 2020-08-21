@@ -1,6 +1,5 @@
 const ShoalToken = artifacts.require("ShoalToken");
 
-
 contract("ShoalToken", accounts => {
 
     const alice = accounts[0];

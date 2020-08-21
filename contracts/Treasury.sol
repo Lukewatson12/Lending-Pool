@@ -3,7 +3,7 @@
 pragma solidity >= 0.6.0 <0.7.0;
 
 import "@openzeppelin/contracts/math/SafeMath.sol";
-import "./Pool.sol";
+import "./Shoal.sol";
 //import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/payment/PaymentSplitter.sol";
 
 // todo make ownable
@@ -31,10 +31,10 @@ contract Treasury {
 
     mapping(address => uint) public addressBalances;
 
-    Pool private pool;
+    Shoal private shoal;
 
-    constructor(Pool _pool) public {
-        pool = _pool;
+    constructor(Shoal _shoal) public {
+        shoal = _shoal;
     }
 
     receive() payable external {

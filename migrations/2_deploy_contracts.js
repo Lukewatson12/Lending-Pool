@@ -1,5 +1,5 @@
-const Pool = artifacts.require("Pool");
+const Shoal = artifacts.require("Shoal");
 
 module.exports = function(deployer) {
-  deployer.deploy(Pool);
+  deployer.deploy(Shoal);
 };
